@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>resource-queue demo</title>
+
+<link rel="import" href="../import.html">
+
+<body>
+
+<h2>JSON</h2>
+<pre><output id="output-json">Fetching JSON…</output></pre>
+
+<h2>HTML</h2>
+<pre><output id="output-html">Fetching HTML…</output></pre>
+
+<h2>CSV</h2>
+<pre><output id="output-csv">Fetching CSV…</output></pre>
+
+<script>
+fetch('demo.json').then(function(response) {
+    return response.json().then(function(body) {
+        return body._items;
+    });
+}).then(function(data) {
+    document.querySelector('#output-json').textContent = JSON.stringify(data, null, '  ');
+});
+</script>
+
+<script>
+fetch('demo.html').then(function(response) {
+    return response.text().then(function(body) {
+        return HTML.select(['.article-authors .contrib'], {
+            name: '[itemprop=name]',
+            url: 'a[itemprop=url] @href',
+        }, HTML.parse(body));
+    });
+}).then(function(data) {
+    document.querySelector('#output-html').textContent = JSON.stringify(data, null, '  ');
+});
+</script>
+
+<script>
+fetch('demo.csv').then(function(response) {
+    return response.text().then(function(body) {
+        return (new CSVParser()).parse(body).results.rows;
+    });
+}).then(function(data) {
+    document.querySelector('#output-csv').textContent = JSON.stringify(data, null, '  ');
+});
+</script>
